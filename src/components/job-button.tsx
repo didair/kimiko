@@ -1,8 +1,15 @@
 "use client";
 
+import { FilePenLineIcon, Loader2Icon, NewspaperIcon, SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+
+const endpointIcons = {
+  "/api/jobs/crawl": SearchIcon,
+  "/api/jobs/generate-subjects": FilePenLineIcon,
+  "/api/jobs/generate-article": NewspaperIcon,
+};
 
 export function JobButton({
   endpoint,
@@ -17,10 +24,12 @@ export function JobButton({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const Icon = endpointIcons[endpoint as keyof typeof endpointIcons] ?? FilePenLineIcon;
 
   return (
     <Button
       variant={variant}
+      size="sm"
       disabled={loading}
       onClick={async () => {
         setLoading(true);
@@ -38,6 +47,7 @@ export function JobButton({
         }
       }}
     >
+      {loading ? <Loader2Icon className="animate-spin" /> : <Icon />}
       {loading ? "Running..." : label}
     </Button>
   );

@@ -1,15 +1,25 @@
 "use client";
 
 import { AngleType } from "@prisma/client";
+import { ArrowDownIcon, ArrowUpIcon, PenLineIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export function CreateSubjectForm() {
+export function CreateSubjectForm({ onCreated }: { onCreated?: () => void }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [brief, setBrief] = useState("");
@@ -30,6 +40,7 @@ export function CreateSubjectForm() {
           setTitle("");
           setBrief("");
           setAngleType(AngleType.guide);
+          onCreated?.();
           router.refresh();
         });
       }}
@@ -57,7 +68,7 @@ export function CreateSubjectForm() {
       <div className="grid gap-2">
         <Label>Angle</Label>
         <Select value={angleType} onValueChange={(value) => setAngleType(value as AngleType)}>
-          <SelectTrigger className="h-10 w-full rounded-xl bg-white">
+          <SelectTrigger className="h-10 w-full rounded-md bg-white">
             <SelectValue placeholder="Select angle" />
           </SelectTrigger>
           <SelectContent>
@@ -69,10 +80,33 @@ export function CreateSubjectForm() {
           </SelectContent>
         </Select>
       </div>
-      <Button type="submit" disabled={isPending} size="lg" className="mt-2 w-full rounded-xl">
+      <Button type="submit" disabled={isPending} size="sm" className="mt-2 w-full">
+        <PenLineIcon />
         {isPending ? "Saving..." : "Add subject"}
       </Button>
     </form>
+  );
+}
+
+export function CreateSubjectDialog() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">
+          <PlusIcon />
+          Add subject
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="rounded-lg sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Add subject</DialogTitle>
+          <DialogDescription>Create a manual article idea and place it at the end of the queue.</DialogDescription>
+        </DialogHeader>
+        <CreateSubjectForm onCreated={() => setOpen(false)} />
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -96,27 +130,46 @@ export function SubjectRowActions({ subjectId, onMove }: { subjectId: string; on
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" size="sm" disabled={isPending} onClick={() => startTransition(() => onMove("up"))}>
-        Up
-      </Button>
-      <Button variant="outline" size="sm" disabled={isPending} onClick={() => startTransition(() => onMove("down"))}>
-        Down
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" size="icon-sm" disabled={isPending} onClick={() => startTransition(() => onMove("up"))}>
+            <ArrowUpIcon />
+            <span className="sr-only">Move up</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Move up</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" size="icon-sm" disabled={isPending} onClick={() => startTransition(() => onMove("down"))}>
+            <ArrowDownIcon />
+            <span className="sr-only">Move down</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Move down</TooltipContent>
+      </Tooltip>
       <Button variant="secondary" size="sm" disabled={isPending} onClick={() => startTransition(generateArticle)}>
+        <PenLineIcon />
         Write now
       </Button>
-      <Button
-        variant="destructive"
-        size="sm"
-        disabled={isPending}
-        onClick={() => {
-          if (window.confirm("Delete this subject?")) {
-            startTransition(removeSubject);
-          }
-        }}
-      >
-        Delete
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="destructive"
+            size="icon-sm"
+            disabled={isPending}
+            onClick={() => {
+              if (window.confirm("Delete this subject?")) {
+                startTransition(removeSubject);
+              }
+            }}
+          >
+            <Trash2Icon />
+            <span className="sr-only">Delete</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Delete</TooltipContent>
+      </Tooltip>
     </div>
   );
 }

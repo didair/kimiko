@@ -20,7 +20,7 @@ export function StatusBadge({
   children: React.ReactNode;
 }) {
   return (
-    <Badge variant="outline" className={cn("rounded-full px-2.5 py-1 capitalize", toneClasses[tone], className)}>
+    <Badge variant="outline" className={cn("rounded-md px-2 py-0.5 capitalize", toneClasses[tone], className)}>
       {children}
     </Badge>
   );

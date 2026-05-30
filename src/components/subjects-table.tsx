@@ -3,6 +3,7 @@
 import type { Subject } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SubjectRowActions } from "@/components/subject-forms";
 import { StatusBadge } from "@/components/status-badge";
@@ -39,8 +40,9 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm">
+    <div className="space-y-4">
+      <div className="overflow-hidden rounded-lg border bg-white shadow-none">
+        <ScrollArea className="h-[min(640px,calc(100vh-15rem))]">
         <Table>
           <TableHeader className="bg-muted/40">
             <TableRow>
@@ -72,9 +74,11 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
             ))}
           </TableBody>
         </Table>
+        </ScrollArea>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border bg-white shadow-none">
+        <ScrollArea className="max-h-80">
         <Table>
           <TableHeader className="bg-muted/40">
             <TableRow>
@@ -98,6 +102,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
             ))}
           </TableBody>
         </Table>
+        </ScrollArea>
       </div>
     </div>
   );
