@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 export function CreateSubjectForm() {
@@ -33,16 +34,42 @@ export function CreateSubjectForm() {
         });
       }}
     >
-      <Input placeholder="Subject title" value={title} onChange={(event) => setTitle(event.target.value)} required />
-      <Textarea placeholder="Short plan for the article" value={brief} onChange={(event) => setBrief(event.target.value)} required />
-      <Select value={angleType} onChange={(event) => setAngleType(event.target.value as AngleType)}>
-        {Object.values(AngleType).map((value) => (
-          <option key={value} value={value}>
-            {value}
-          </option>
-        ))}
-      </Select>
-      <Button type="submit" disabled={isPending}>
+      <div className="grid gap-2">
+        <Label htmlFor="subject-title">Title</Label>
+        <Input
+          id="subject-title"
+          placeholder="Get started with smart thermostats"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          required
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="subject-brief">Brief</Label>
+        <Textarea
+          id="subject-brief"
+          placeholder="Explain what beginners should look for, where the products fit, and how to choose a first setup."
+          value={brief}
+          onChange={(event) => setBrief(event.target.value)}
+          required
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label>Angle</Label>
+        <Select value={angleType} onValueChange={(value) => setAngleType(value as AngleType)}>
+          <SelectTrigger className="h-10 w-full rounded-xl bg-white">
+            <SelectValue placeholder="Select angle" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.values(AngleType).map((value) => (
+              <SelectItem key={value} value={value}>
+                {value.replaceAll("_", " ")}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <Button type="submit" disabled={isPending} size="lg" className="mt-2 w-full rounded-xl">
         {isPending ? "Saving..." : "Add subject"}
       </Button>
     </form>
@@ -69,17 +96,18 @@ export function SubjectRowActions({ subjectId, onMove }: { subjectId: string; on
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" disabled={isPending} onClick={() => startTransition(() => onMove("up"))}>
+      <Button variant="outline" size="sm" disabled={isPending} onClick={() => startTransition(() => onMove("up"))}>
         Up
       </Button>
-      <Button variant="outline" disabled={isPending} onClick={() => startTransition(() => onMove("down"))}>
+      <Button variant="outline" size="sm" disabled={isPending} onClick={() => startTransition(() => onMove("down"))}>
         Down
       </Button>
-      <Button variant="secondary" disabled={isPending} onClick={() => startTransition(generateArticle)}>
+      <Button variant="secondary" size="sm" disabled={isPending} onClick={() => startTransition(generateArticle)}>
         Write now
       </Button>
       <Button
         variant="destructive"
+        size="sm"
         disabled={isPending}
         onClick={() => {
           if (window.confirm("Delete this subject?")) {

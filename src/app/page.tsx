@@ -3,9 +3,9 @@ export const dynamic = "force-dynamic";
 import { AppShell } from "@/components/app-shell";
 import { JobButton } from "@/components/job-button";
 import { MetricCard } from "@/components/metric-card";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TBody, TD, TH, THead } from "@/components/ui/table";
+import { StatusBadge } from "@/components/status-badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getConfig } from "@/lib/config";
 import { getDashboardData } from "@/lib/dashboard";
 import { formatDate } from "@/lib/format";
@@ -23,97 +23,97 @@ export default async function Home() {
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
-        <Card>
+        <Card className="rounded-3xl border-border/70 bg-white/85 shadow-sm backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between gap-3">
             <div>
               <CardTitle>Manual controls</CardTitle>
-              <p className="mt-1 text-sm text-slate-500">Use the same service layer as the scheduler.</p>
+              <CardDescription>Use the same service layer as the scheduler.</CardDescription>
             </div>
-            <Badge tone="warning">{config.TIMEZONE}</Badge>
+            <StatusBadge tone="warning">{config.TIMEZONE}</StatusBadge>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <JobButton endpoint="/api/jobs/crawl" label="Run crawl now" />
-            <JobButton endpoint="/api/jobs/generate-subjects" label="Generate subjects now" />
+            <JobButton endpoint="/api/jobs/generate-subjects" label="Generate subjects now" variant="outline" />
             <JobButton endpoint="/api/jobs/generate-article" label="Generate next article now" variant="default" />
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-3xl border-border/70 bg-white/85 shadow-sm backdrop-blur">
           <CardHeader>
             <CardTitle>Schedules</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm text-slate-600">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
-              Crawl: <span className="font-medium text-slate-950">{config.CRON_CRAWL}</span>
+              Crawl: <span className="font-medium text-foreground">{config.CRON_CRAWL}</span>
             </p>
             <p>
-              Subjects: <span className="font-medium text-slate-950">{config.CRON_SUBJECTS}</span>
+              Subjects: <span className="font-medium text-foreground">{config.CRON_SUBJECTS}</span>
             </p>
             <p>
-              Article: <span className="font-medium text-slate-950">{config.CRON_ARTICLE}</span>
+              Article: <span className="font-medium text-foreground">{config.CRON_ARTICLE}</span>
             </p>
           </CardContent>
         </Card>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-2">
-        <Card>
+        <Card className="rounded-3xl border-border/70 bg-white/85 shadow-sm backdrop-blur">
           <CardHeader>
             <CardTitle>Recent runs</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
-              <THead>
-                <tr>
-                  <TH>Job</TH>
-                  <TH>Status</TH>
-                  <TH>Finished</TH>
-                </tr>
-              </THead>
-              <TBody>
+              <TableHeader className="bg-muted/40">
+                <TableRow>
+                  <TableHead className="pl-4">Job</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="pr-4">Finished</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {dashboard.recentRuns.map((run) => (
-                  <tr key={run.id}>
-                    <TD>{run.jobType}</TD>
-                    <TD>
-                      <Badge tone={run.status === "success" ? "success" : run.status === "failed" ? "danger" : "warning"}>{run.status}</Badge>
-                    </TD>
-                    <TD>{formatDate(run.finishedAt)}</TD>
-                  </tr>
+                  <TableRow key={run.id}>
+                    <TableCell className="pl-4 capitalize">{run.jobType}</TableCell>
+                    <TableCell>
+                      <StatusBadge tone={run.status === "success" ? "success" : run.status === "failed" ? "danger" : "warning"}>{run.status}</StatusBadge>
+                    </TableCell>
+                    <TableCell className="pr-4">{formatDate(run.finishedAt)}</TableCell>
+                  </TableRow>
                 ))}
-              </TBody>
+              </TableBody>
             </Table>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-3xl border-border/70 bg-white/85 shadow-sm backdrop-blur">
           <CardHeader>
             <CardTitle>Recent content</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
-              <THead>
-                <tr>
-                  <TH>Title</TH>
-                  <TH>Status</TH>
-                  <TH>Created</TH>
-                </tr>
-              </THead>
-              <TBody>
+              <TableHeader className="bg-muted/40">
+                <TableRow>
+                  <TableHead className="pl-4">Title</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="pr-4">Created</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {dashboard.recentArticles.map((article) => (
-                  <tr key={article.id}>
-                    <TD>
-                      <p className="font-medium text-slate-900">{article.title}</p>
-                      <p className="mt-1 text-xs text-slate-500">{article.subject.title}</p>
-                    </TD>
-                    <TD>
-                      <Badge tone={article.status === "draft_published" ? "success" : article.status === "publish_failed" ? "danger" : "warning"}>
+                  <TableRow key={article.id}>
+                    <TableCell className="pl-4 py-4 align-top whitespace-normal">
+                      <p className="font-medium text-foreground">{article.title}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{article.subject.title}</p>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={article.status === "draft_published" ? "success" : article.status === "publish_failed" ? "danger" : "warning"}>
                         {article.status}
-                      </Badge>
-                    </TD>
-                    <TD>{formatDate(article.createdAt)}</TD>
-                  </tr>
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell className="pr-4">{formatDate(article.createdAt)}</TableCell>
+                  </TableRow>
                 ))}
-              </TBody>
+              </TableBody>
             </Table>
           </CardContent>
         </Card>

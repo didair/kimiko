@@ -3,8 +3,9 @@
 import type { Subject } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Table, TBody, TD, TH, THead } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SubjectRowActions } from "@/components/subject-forms";
+import { StatusBadge } from "@/components/status-badge";
 import { formatDate } from "@/lib/format";
 
 export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
@@ -39,63 +40,63 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
 
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm">
         <Table>
-          <THead>
-            <tr>
-              <TH>Queue</TH>
-              <TH>Subject</TH>
-              <TH>Angle</TH>
-              <TH>Source</TH>
-              <TH>Actions</TH>
-            </tr>
-          </THead>
-          <TBody>
+          <TableHeader className="bg-muted/40">
+            <TableRow>
+              <TableHead className="pl-4">Queue</TableHead>
+              <TableHead>Subject</TableHead>
+              <TableHead>Angle</TableHead>
+              <TableHead>Source</TableHead>
+              <TableHead className="pr-4">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {queued.map((subject) => (
-              <tr key={subject.id}>
-                <TD className="font-medium text-slate-900">{subject.position}</TD>
-                <TD>
-                  <p className="font-medium text-slate-900">{subject.title}</p>
-                  <p className="mt-1 text-sm text-slate-500">{subject.brief}</p>
-                </TD>
-                <TD>
+              <TableRow key={subject.id}>
+                <TableCell className="pl-4 font-medium text-foreground">{subject.position}</TableCell>
+                <TableCell className="max-w-xl py-4 align-top whitespace-normal">
+                  <p className="font-medium text-foreground">{subject.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{subject.brief}</p>
+                </TableCell>
+                <TableCell>
                   <Badge>{subject.angleType}</Badge>
-                </TD>
-                <TD>
-                  <Badge tone={subject.source === "manual" ? "warning" : "default"}>{subject.source}</Badge>
-                </TD>
-                <TD>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge tone={subject.source === "manual" ? "warning" : "neutral"}>{subject.source}</StatusBadge>
+                </TableCell>
+                <TableCell className="pr-4">
                   <SubjectRowActions subjectId={subject.id} onMove={(direction) => moveSubject(subject.id, direction)} />
-                </TD>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </TBody>
+          </TableBody>
         </Table>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm">
         <Table>
-          <THead>
-            <tr>
-              <TH>Archived</TH>
-              <TH>Status</TH>
-              <TH>Used</TH>
-            </tr>
-          </THead>
-          <TBody>
+          <TableHeader className="bg-muted/40">
+            <TableRow>
+              <TableHead className="pl-4">Archived</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="pr-4">Used</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {archived.map((subject) => (
-              <tr key={subject.id}>
-                <TD>
-                  <p className="font-medium text-slate-900">{subject.title}</p>
-                  <p className="mt-1 text-sm text-slate-500">{subject.brief}</p>
-                </TD>
-                <TD>
-                  <Badge tone={subject.status === "used" ? "success" : "warning"}>{subject.status}</Badge>
-                </TD>
-                <TD>{formatDate(subject.usedAt)}</TD>
-              </tr>
+              <TableRow key={subject.id}>
+                <TableCell className="pl-4 py-4 align-top whitespace-normal">
+                  <p className="font-medium text-foreground">{subject.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{subject.brief}</p>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge tone={subject.status === "used" ? "success" : "warning"}>{subject.status}</StatusBadge>
+                </TableCell>
+                <TableCell className="pr-4">{formatDate(subject.usedAt)}</TableCell>
+              </TableRow>
             ))}
-          </TBody>
+          </TableBody>
         </Table>
       </div>
     </div>
