@@ -1,6 +1,6 @@
 "use client";
 
-import { AngleType } from "@prisma/client";
+import { AngleType, type Subject } from "@prisma/client";
 import { ArrowDownIcon, ArrowUpIcon, PenLineIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -110,17 +110,102 @@ export function CreateSubjectDialog() {
   );
 }
 
-export function SubjectRowActions({ subjectId, onMove }: { subjectId: string; onMove: (direction: "up" | "down") => Promise<void> }) {
+export function EditSubjectDialog({ subject }: { subject: Subject }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState(subject.title);
+  const [brief, setBrief] = useState(subject.brief);
+  const [angleType, setAngleType] = useState<AngleType>(subject.angleType);
+  const [isPending, startTransition] = useTransition();
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          <PenLineIcon />
+          Edit
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="rounded-lg sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Edit subject</DialogTitle>
+          <DialogDescription>Adjust the queued title, brief, or article angle before generation.</DialogDescription>
+        </DialogHeader>
+        <form
+          className="grid gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            startTransition(async () => {
+              const response = await fetch(`/api/subjects/${subject.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, brief, angleType }),
+              });
+
+              if (!response.ok) {
+                return;
+              }
+
+              setOpen(false);
+              router.refresh();
+            });
+          }}
+        >
+          <div className="grid gap-2">
+            <Label htmlFor={`edit-subject-title-${subject.id}`}>Title</Label>
+            <Input
+              id={`edit-subject-title-${subject.id}`}
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              required
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`edit-subject-brief-${subject.id}`}>Brief</Label>
+            <Textarea
+              id={`edit-subject-brief-${subject.id}`}
+              value={brief}
+              rows={12}
+              onChange={(event) => setBrief(event.target.value)}
+              required
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label>Angle</Label>
+            <Select value={angleType} onValueChange={(value) => setAngleType(value as AngleType)}>
+              <SelectTrigger className="h-10 w-full rounded-md bg-white">
+                <SelectValue placeholder="Select angle" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(AngleType).map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {value.replaceAll("_", " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button type="submit" disabled={isPending} size="sm" className="mt-2 w-full">
+            <PenLineIcon />
+            {isPending ? "Saving..." : "Save changes"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function SubjectRowActions({ subject, onMove }: { subject: Subject; onMove: (direction: "up" | "down") => Promise<void> }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   async function removeSubject() {
-    await fetch(`/api/subjects/${subjectId}`, { method: "DELETE" });
+    await fetch(`/api/subjects/${subject.id}`, { method: "DELETE" });
     router.refresh();
   }
 
   async function generateArticle() {
-    await fetch(`/api/subjects/${subjectId}`, {
+    await fetch(`/api/subjects/${subject.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "generate_article" }),
@@ -148,10 +233,7 @@ export function SubjectRowActions({ subjectId, onMove }: { subjectId: string; on
         </TooltipTrigger>
         <TooltipContent>Move down</TooltipContent>
       </Tooltip>
-      <Button variant="secondary" size="sm" disabled={isPending} onClick={() => startTransition(generateArticle)}>
-        <PenLineIcon />
-        Write now
-      </Button>
+      <EditSubjectDialog subject={subject} />
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -170,6 +252,10 @@ export function SubjectRowActions({ subjectId, onMove }: { subjectId: string; on
         </TooltipTrigger>
         <TooltipContent>Delete</TooltipContent>
       </Tooltip>
+      <Button variant="secondary" size="sm" disabled={isPending} onClick={() => startTransition(generateArticle)}>
+        <PenLineIcon />
+        Write now
+      </Button>
     </div>
   );
 }

@@ -68,7 +68,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
                   <StatusBadge tone={subject.source === "manual" ? "warning" : "neutral"}>{subject.source}</StatusBadge>
                 </TableCell>
                 <TableCell className="pr-4">
-                  <SubjectRowActions subjectId={subject.id} onMove={(direction) => moveSubject(subject.id, direction)} />
+                  <SubjectRowActions subject={subject} onMove={(direction) => moveSubject(subject.id, direction)} />
                 </TableCell>
               </TableRow>
             ))}
