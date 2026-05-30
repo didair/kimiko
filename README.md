@@ -1,5 +1,5 @@
 <p align="center">
-![Kimiko intro](https://cdn.homio.se/intro-1653312308.jpg)
+<img src="https://cdn.homio.se/intro-1653312308.jpg" />
 </p>
 
 # Kimiko
@@ -31,7 +31,6 @@ npm run dev
 ## Required config
 
 - `PORT`
-- `DATABASE_URL`
 - `SITE_URL`
 - `WORDPRESS_URL`
 - `WORDPRESS_USERNAME`
@@ -39,13 +38,19 @@ npm run dev
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL`
 
-Kimiko stores data in the SQLite file referenced by `DATABASE_URL`. A simple pattern is to keep one directory per instance, for example `/kimiko/homio/`, and mount that directory into the container. Then both `.env` and `kimiko.db` live together in the same host directory.
+Kimiko stores data in a local SQLite file. In Docker, if `DATABASE_URL` is not set, Kimiko automatically uses `file:/instance/kimiko.db`.
 
-Example:
+A simple pattern is to keep one directory per instance, for example `/kimiko/homio/`, and mount that directory into the container. Then both `.env` and `kimiko.db` live together in the same host directory.
 
-```env
-DATABASE_URL="file:/instance/kimiko.db"
+That means this is enough:
+
+```bash
+mkdir -p /kimiko/homio
+cp .env.example /kimiko/homio/.env
+docker run --rm -p 3000:3000 --env-file /kimiko/homio/.env -v /kimiko/homio:/instance kimiko
 ```
+
+`DATABASE_URL` is optional and only needed if you want to override the default database location.
 
 ## Admin UI
 
