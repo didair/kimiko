@@ -1,4 +1,6 @@
+<p align="center">
 ![Kimiko intro](https://cdn.homio.se/intro-1653312308.jpg)
+</p>
 
 # Kimiko
 
