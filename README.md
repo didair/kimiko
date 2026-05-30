@@ -52,6 +52,8 @@ docker run --rm -p 3000:3000 --env-file /kimiko/homio/.env -v /kimiko/homio:/ins
 
 `DATABASE_URL` is optional and only needed if you want to override the default database location.
 
+For local development against a WordPress instance with a self-signed certificate, Kimiko allows insecure WordPress TLS by default in `development`. You can override that with `WORDPRESS_ALLOW_INSECURE_TLS=true` or `false`.
+
 ## Admin UI
 
 Open `http://localhost:3000` to manage subjects, inspect runs and logs, and trigger crawl or article jobs manually.

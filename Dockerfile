@@ -12,7 +12,7 @@ RUN npm run build
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN mkdir -p /data
+RUN mkdir -p /instance
 
 EXPOSE 3000
 

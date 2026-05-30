@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "node scripts/start.mjs",
     "lint": "eslint",
     "test": "vitest run",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "node scripts/prisma-migrate-dev.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",

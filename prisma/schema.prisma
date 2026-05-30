@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum SubjectStatus {
+  queued
+  skipped
+  used
+}
+
+enum SubjectSource {
+  ai
+  manual
+}
+
+enum AngleType {
+  guide
+  comparison
+  product_focus
+  listicle
+  educational
+}
+
+enum PageType {
+  product
+  content
+  other
+}
+
+enum ArticleStatus {
+  generated
+  draft_published
+  publish_failed
+}
+
+enum JobType {
+  crawl
+  subjects
+  article
+}
+
+enum RunStatus {
+  success
+  failed
+  partial
+}
+
+enum LogLevel {
+  debug
+  info
+  warn
+  error
+}
+
+model Subject {
+  id        String        @id @default(cuid())
+  title     String
+  brief     String
+  angleType AngleType
+  status    SubjectStatus @default(queued)
+  position  Int
+  source    SubjectSource
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  usedAt    DateTime?
+
+  articles Article[]
+
+  @@index([status, position])
+}
+
+model SitePage {
+  id              String   @id @default(cuid())
+  url             String   @unique
+  pageType        PageType
+  title           String
+  metaDescription String?
+  headingsJson    String
+  textContent     String
+  contentHash     String
+  lastCrawledAt   DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Article {
+  id              String        @id @default(cuid())
+  subjectId       String
+  title           String
+  excerpt         String
+  slug            String
+  contentHtml     String
+  metaDescription String
+  wordCount       Int
+  status          ArticleStatus @default(generated)
+  wordpressPostId Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId])
+  @@index([status, createdAt])
+}
+
+model JobRun {
+  id          String    @id @default(cuid())
+  jobType     JobType
+  status      RunStatus
+  startedAt   DateTime
+  finishedAt  DateTime?
+  summary     String
+  detailsJson String?
+  createdAt   DateTime  @default(now())
+
+  @@index([jobType, createdAt])
+}
+
+model AppLog {
+  id          String   @id @default(cuid())
+  level       LogLevel
+  scope       String
+  message     String
+  detailsJson String?
+  createdAt   DateTime @default(now())
+
+  @@index([level, createdAt])
+  @@index([scope, createdAt])
+}
+
+model AppState {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
