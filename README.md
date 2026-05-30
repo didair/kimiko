@@ -11,8 +11,10 @@ Kimiko is a self-hosted service that crawls one ecommerce website, generates art
 3. Start Kimiko with Docker or run it locally.
 
 ```bash
+mkdir -p /kimiko/homio
+cp .env.example /kimiko/homio/.env
 docker build -t kimiko .
-docker run --rm -p 3000:3000 --env-file .env -v $(pwd)/data:/data kimiko
+docker run --rm -p 3000:3000 --env-file /kimiko/homio/.env -v /kimiko/homio:/instance kimiko
 ```
 
 Local development:
@@ -35,7 +37,13 @@ npm run dev
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL`
 
-Kimiko stores data in the SQLite file referenced by `DATABASE_URL`. In Docker, the example config uses `/data/kimiko.db`, so mount `/data` to keep data persistent.
+Kimiko stores data in the SQLite file referenced by `DATABASE_URL`. A simple pattern is to keep one directory per instance, for example `/kimiko/homio/`, and mount that directory into the container. Then both `.env` and `kimiko.db` live together in the same host directory.
+
+Example:
+
+```env
+DATABASE_URL="file:/instance/kimiko.db"
+```
 
 ## Admin UI
 

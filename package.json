@@ -1,0 +1,43 @@
+{
+  "name": "kimiko",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "lint": "eslint",
+    "test": "vitest run",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "cheerio": "^1.2.0",
+    "clsx": "^2.1.1",
+    "fast-xml-parser": "^5.8.0",
+    "lucide-react": "^1.17.0",
+    "next": "16.2.6",
+    "node-cron": "^4.2.1",
+    "openai": "^6.39.1",
+    "prisma": "^6.19.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sanitize-html": "^2.17.4",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/sanitize-html": "^2.16.1",
+    "@vitest/coverage-v8": "^4.0.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.0.8"
+  }
+}
