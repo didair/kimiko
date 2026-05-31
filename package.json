@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "node scripts/prisma-migrate-dev.mjs"
+    "prisma:migrate": "node scripts/prisma-migrate-dev.mjs",
+    "build:image": "docker build -t kimiko:latest ."
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
