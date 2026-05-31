@@ -49,9 +49,27 @@ export type AppConfig = ParsedConfig;
 
 let cachedConfig: ParsedConfig | null = null;
 
+function stripEnvQuotes(value: string) {
+  const trimmed = value.trim();
+  const first = trimmed.at(0);
+  const last = trimmed.at(-1);
+
+  if ((first === `"` && last === `"`) || (first === "'" && last === "'")) {
+    return trimmed.slice(1, -1);
+  }
+
+  return value;
+}
+
+function normalizeEnv(env: NodeJS.ProcessEnv) {
+  return Object.fromEntries(
+    Object.entries(env).map(([key, value]) => [key, typeof value === "string" ? stripEnvQuotes(value) : value]),
+  );
+}
+
 export function getConfig(): ParsedConfig {
   if (!cachedConfig) {
-    const parsed = schema.parse(process.env);
+    const parsed = schema.parse(normalizeEnv(process.env));
     cachedConfig = {
       ...parsed,
       WORDPRESS_ALLOW_INSECURE_TLS:

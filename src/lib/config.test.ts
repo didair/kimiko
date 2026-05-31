@@ -26,6 +26,18 @@ describe("config", () => {
     expect(config.getConfig().SITE_URL).toBe("https://example.com");
   });
 
+  it("accepts docker env-file values wrapped in quotes", async () => {
+    process.env.SITE_URL = '"https://homio.se"';
+    process.env.WORDPRESS_URL = '"https://backend.homio.se"';
+    process.env.WORDPRESS_APP_PASSWORD = '"app password with spaces"';
+    const config = await import("./config");
+    config.resetConfigForTests();
+
+    expect(config.getConfig().SITE_URL).toBe("https://homio.se");
+    expect(config.getConfig().WORDPRESS_URL).toBe("https://backend.homio.se");
+    expect(config.getConfig().WORDPRESS_APP_PASSWORD).toBe("app password with spaces");
+  });
+
   it("defaults database url when unset", async () => {
     const config = await import("./config");
     expect(config.getConfig().DATABASE_URL).toBe("file:./dev.db");
