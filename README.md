@@ -13,10 +13,10 @@ Kimiko is a self-hosted service that crawls one ecommerce website, generates art
 3. Start Kimiko with Docker or run it locally.
 
 ```bash
-mkdir -p /kimiko/homio
-cp .env.example /kimiko/homio/.env
+mkdir -p /kimiko/example
+cp .env.example /kimiko/example/.env
 docker build -t kimiko .
-docker run --rm -p 3000:3000 --env-file /kimiko/homio/.env -v /kimiko/homio:/instance kimiko
+docker run --rm -p 3000:3000 --env-file /kimiko/example/.env -v /kimiko/example:/instance kimiko
 ```
 
 Local development:
@@ -40,17 +40,19 @@ npm run dev
 
 Kimiko stores data in a local SQLite file. In Docker, if `DATABASE_URL` is not set, Kimiko automatically uses `file:/instance/kimiko.db`.
 
-A simple pattern is to keep one directory per instance, for example `/kimiko/homio/`, and mount that directory into the container. Then both `.env` and `kimiko.db` live together in the same host directory.
+A simple pattern is to keep one directory per instance, for example `/kimiko/example/`, and mount that directory into the container. Then both `.env` and `kimiko.db` live together in the same host directory.
 
 That means this is enough:
 
 ```bash
-mkdir -p /kimiko/homio
-cp .env.example /kimiko/homio/.env
-docker run --rm -p 3000:3000 --env-file /kimiko/homio/.env -v /kimiko/homio:/instance kimiko
+mkdir -p /kimiko/example
+cp .env.example /kimiko/example/.env
+docker run --rm -p 3000:3000 --env-file /kimiko/example/.env -v /kimiko/example:/instance kimiko
 ```
 
 `DATABASE_URL` is optional and only needed if you want to override the default database location.
+
+`MAX_ACTIVE_SUBJECTS` is optional and defaults to `50`. When the queued subject count is at or above this value, scheduled/manual AI subject generation skips creating more subjects. Manual subject creation in the admin UI still works.
 
 For local development against a WordPress instance with a self-signed certificate, Kimiko allows insecure WordPress TLS by default in `development`. You can override that with `WORDPRESS_ALLOW_INSECURE_TLS=true` or `false`.
 

@@ -2,6 +2,7 @@ import { JobType, RunStatus } from "@prisma/client";
 import { crawlSite } from "@/lib/crawler";
 import { persistCrawlPages, getPromptContextPages } from "@/lib/context";
 import { prisma } from "@/lib/db";
+import { getConfig } from "@/lib/config";
 import { logEvent } from "@/lib/logger";
 import { OpenAIProvider } from "@/lib/openai-provider";
 import { appendGeneratedSubjects } from "@/lib/subjects";
@@ -23,6 +24,22 @@ export async function runCrawlJob() {
 
 export async function runSubjectGenerationJob() {
   return runJob(JobType.subjects, async () => {
+    const config = getConfig();
+    const activeSubjects = await prisma.subject.count({
+      where: { status: "queued" },
+    });
+
+    if (activeSubjects >= config.MAX_ACTIVE_SUBJECTS) {
+      return {
+        summary: `Skipped subject generation because ${activeSubjects} active subjects meets the limit of ${config.MAX_ACTIVE_SUBJECTS}`,
+        details: {
+          activeSubjects,
+          maxActiveSubjects: config.MAX_ACTIVE_SUBJECTS,
+        },
+        status: RunStatus.partial,
+      };
+    }
+
     const provider = new OpenAIProvider();
     const pages = await getPromptContextPages();
     const recentSubjects = await prisma.subject.findMany({

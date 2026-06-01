@@ -43,6 +43,18 @@ describe("config", () => {
     expect(config.getConfig().DATABASE_URL).toBe("file:./dev.db");
   });
 
+  it("defaults max active subjects to 50", async () => {
+    const config = await import("./config");
+    expect(config.getConfig().MAX_ACTIVE_SUBJECTS).toBe(50);
+  });
+
+  it("parses custom max active subjects", async () => {
+    process.env.MAX_ACTIVE_SUBJECTS = "12";
+    const config = await import("./config");
+    config.resetConfigForTests();
+    expect(config.getConfig().MAX_ACTIVE_SUBJECTS).toBe(12);
+  });
+
   it("allows insecure wordpress tls by default in development", async () => {
     process.env.NODE_ENV = "development";
     const config = await import("./config");

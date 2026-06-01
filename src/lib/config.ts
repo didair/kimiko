@@ -21,6 +21,7 @@ const schema = z
     CRON_ARTICLE: z.string().default("0 3 * * *"),
     SUBJECTS_PER_DAY_MIN: z.coerce.number().int().min(1).max(10).default(1),
     SUBJECTS_PER_DAY_MAX: z.coerce.number().int().min(1).max(10).default(3),
+    MAX_ACTIVE_SUBJECTS: z.coerce.number().int().min(1).max(1000).default(50),
     MAX_CRAWL_PAGES: z.coerce.number().int().min(1).max(1000).default(200),
     MAX_CONTEXT_PRODUCTS: z.coerce.number().int().min(1).max(200).default(50),
     MAX_CONTEXT_PAGES: z.coerce.number().int().min(1).max(200).default(50),
