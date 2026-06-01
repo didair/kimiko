@@ -17,7 +17,7 @@ export type ArticleDraft = {
   slug: string;
   intro: string;
   sections: ArticleDraftSection[];
-  conclusion: string;
+  conclusion?: string;
   metaDescription: string;
   productMentions: Array<{
     name: string;

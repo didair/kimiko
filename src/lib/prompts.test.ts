@@ -23,7 +23,6 @@ describe("prompt parsers", () => {
           slug: "a",
           intro: "intro",
           sections: [{ heading: "H", body: "Body" }],
-          conclusion: "Done",
           metaDescription: "Meta",
           productMentions: [],
         }),

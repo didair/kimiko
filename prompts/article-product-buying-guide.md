@@ -40,13 +40,27 @@ Do not ask questions.
 
 Do not include explanations about how the article was written.
 
-Do not add unnecessary filler. Quality is more important than length. The article should be as long as needed to properly cover the subject, products, and buying decision, but it must not be padded with generic, repetitive, or low-value content.
+Do not add unnecessary filler. Quality is more important than length. The article should be compact and useful, not padded with generic, repetitive, or low-value content.
+
+Keep the article focused. If an idea has already been explained once, do not restate it in a new section unless there is a genuinely new buying consideration.
 
 EDITOR MANAGEMENT SECTION
 
 If the article mentions any specific product, product category, internal page, guide, collection, brand, or other website content, include an editor management section at the very top of the article.
 
-Kimiko does not currently store a separate editor-notes field, so incorporate these needs into the article content where relevant and use `productMentions` for concrete product/category references. Keep unsupported rankings or facts out of the body text.
+This section is useful for the editorial team and will be removed manually before publishing. Keep it short, factual, and practical. Use it to list what the editor should verify, such as product links, category relevance, compatibility claims, pricing-sensitive wording, or details that may need checking.
+
+Kimiko does not currently store a separate editor-notes field, so include this as the first article section when relevant. Do not let this section replace the actual reader-facing introduction.
+
+Use this format for the editor management section body:
+
+Brief summary: Write one or two short sentences explaining what the article is about and what buying intent it serves.
+Mentioned products: List specific product names mentioned in the article, or write "None".
+Suggested categories: List relevant categories or collections the editor may want to link, or write "None".
+Internal links to verify: List important internal pages, products, categories, or guides that should be checked, or write "None".
+Claims to verify: List any factual, compatibility, product, pricing-sensitive, or market claims that need editorial verification, or write "None".
+
+Keep this section compact. Do not write long paragraphs in the editor management section.
 
 SEO REQUIREMENTS
 
@@ -66,7 +80,7 @@ The article itself should include:
 - Related terms and synonyms where appropriate
 - Practical product-selection guidance
 - A clear recommendation structure
-- A useful conclusion or next step
+- A useful final section only when it adds a concrete next step
 
 Do not force keywords into unnatural places.
 
@@ -93,8 +107,21 @@ Avoid:
 - Unverified claims
 - Over-promising product benefits
 - Keyword stuffing
+- Robotic transitions such as “In conclusion”, “Furthermore”, “Moreover”, or repeated “It is important to”
+- Repeating the subject title or the same keyword phrase in every section
 
 Prefer practical buying advice over vague claims.
+
+Make the article feel written by a knowledgeable editor:
+- Vary sentence length
+- Use direct, natural phrasing
+- Use small practical buying observations where useful
+- Let sections end when the useful point has been made
+- Prefer 1 to 2 concise paragraphs per section
+- Avoid repeating the same benefit in different words
+- Do not write a separate conclusion section
+- Do not write a section titled “Relevant products”
+- If a final section is useful, give it a specific action-oriented heading, not “Conclusion”
 
 For example, instead of writing:
 
@@ -113,9 +140,8 @@ Use this general structure unless the subject clearly requires another format:
 - `slug`
 - `intro`
 - `sections`
-- `conclusion`
 - `metaDescription`
-- `productMentions`
+- `productMentions` for internal traceability only, not as a visible article section
 
 Recommended section flow:
 - quick recommendation
@@ -126,6 +152,12 @@ Recommended section flow:
 - recommended next step
 
 Adapt the headings to the subject. Do not use generic headings if better, more specific headings are possible.
+
+Do not use headings named:
+- Conclusion
+- Relevant products
+- Summary
+- Final thoughts
 
 PRODUCT RECOMMENDATION RULES
 
@@ -211,7 +243,6 @@ The final output must be valid JSON matching exactly this schema:
       "body": "string"
     }
   ],
-  "conclusion": "string",
   "metaDescription": "string",
   "productMentions": [
     {
@@ -223,11 +254,13 @@ The final output must be valid JSON matching exactly this schema:
 }
 
 Rules for the JSON:
-- `sections` must contain at least 4 useful sections
+- `sections` should usually contain 3 to 5 useful sections
 - `body` values must be plain text paragraphs, not HTML or Markdown
 - `slug` must be lowercase and URL-friendly
 - `productMentions` may be an empty array if no grounded mention is appropriate
 - only include products, categories, or pages in `productMentions` when they are supported by the provided site context
+- do not include a separate conclusion field
+- do not put a generic closing paragraph in the final section unless it gives the reader a concrete next step
 
 The final output must not include:
 - questions to the user
@@ -251,7 +284,7 @@ If the Language Setting says Norwegian, write the entire article in Norwegian.
 
 If the Language Setting says English, write the entire article in English.
 
-The Editor Notes, SEO meta title, SEO meta description, headings, article body, calls to action, comparison tables, product descriptions, and conclusion must all use the selected article language.
+The Editor Notes, SEO meta title, SEO meta description, headings, article body, calls to action, comparison tables, and product descriptions must all use the selected article language.
 
 Do not mix languages unless the subject explicitly requires a product name, brand name, or technical term in another language.
 
