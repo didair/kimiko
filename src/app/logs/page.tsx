@@ -19,29 +19,29 @@ export default async function LogsPage() {
   return (
     <AppShell currentPath="/logs" title="Logs" description="Structured operational logs for the current instance.">
       <PageSection title="Operational logs" description="Compact event stream with JSON details available on demand.">
-        <Card className="overflow-hidden rounded-lg border bg-white shadow-none">
+        <Card className="overflow-hidden py-0">
           <CardContent className="p-0">
             <ScrollArea className="h-[min(700px,calc(100vh-13rem))]">
             <Table>
-              <TableHeader className="bg-muted/35">
+              <TableHeader className="bg-muted/45">
                 <TableRow>
-                  <TableHead className="pl-4">Scope</TableHead>
+                  <TableHead className="pl-5">Scope</TableHead>
                   <TableHead>Level</TableHead>
                   <TableHead>Message</TableHead>
                   <TableHead>Created</TableHead>
-                  <TableHead className="pr-4 text-right">Details</TableHead>
+                  <TableHead className="pr-5 text-right">Details</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {logs.map((log) => (
                   <TableRow key={log.id}>
-                    <TableCell className="pl-4 font-medium">{log.scope}</TableCell>
+                    <TableCell className="pl-5 font-medium">{log.scope}</TableCell>
                     <TableCell>
                       <StatusBadge tone={log.level === "error" ? "danger" : log.level === "warn" ? "warning" : "neutral"}>{log.level}</StatusBadge>
                     </TableCell>
                     <TableCell className="max-w-xl whitespace-normal text-muted-foreground">{log.message}</TableCell>
                     <TableCell>{formatDate(log.createdAt)}</TableCell>
-                    <TableCell className="pr-4 text-right">
+                    <TableCell className="pr-5 text-right">
                       <JsonDetailsDialog
                         title={`${log.scope} log entry`}
                         description={log.message}

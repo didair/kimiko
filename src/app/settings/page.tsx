@@ -2,8 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { AppShell } from "@/components/app-shell";
 import { PageSection } from "@/components/page-section";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent } from "@/components/ui/card";
 import { getSettingsData } from "@/lib/dashboard";
 
 export default async function SettingsPage() {
@@ -12,14 +11,16 @@ export default async function SettingsPage() {
   return (
     <AppShell currentPath="/settings" title="Settings" description="Read-only effective configuration with secrets masked.">
       <PageSection title="Environment" description="Effective runtime configuration with sensitive values masked.">
-        <Card className="overflow-hidden rounded-lg border bg-white shadow-none">
-          <CardHeader>
-            <CardTitle>Resolved config</CardTitle>
-          </CardHeader>
+        <Card>
           <CardContent className="p-0">
-            <ScrollArea className="h-[min(700px,calc(100vh-13rem))]">
-              <pre className="overflow-x-auto bg-slate-950 p-5 text-sm leading-6 text-slate-100">{JSON.stringify(settings, null, 2)}</pre>
-            </ScrollArea>
+            <dl className="grid gap-x-8 gap-y-0 sm:grid-cols-2 xl:grid-cols-3">
+              {Object.entries(settings).map(([key, value]) => (
+                <div key={key} className="min-w-0 border-b border-black/6 px-5 py-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">{key.replaceAll("_", " ")}</dt>
+                  <dd className="mt-1.5 break-all font-mono text-sm font-medium text-foreground">{String(value)}</dd>
+                </div>
+              ))}
+            </dl>
           </CardContent>
         </Card>
       </PageSection>
